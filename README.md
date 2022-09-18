@@ -1,3 +1,61 @@
+# Bài tập ứng dụng đảm bảo tiêu chuẩn bảo mật và phân quyền trong ứng dụng
+
+## Đề bài
+
+Cho hệ thống có cấu trúc bảng như sau
+
+1 - sys_user: thông tin người dùng
+2 - sys_depart: thông tin đơn vị
+3 - sys_role: vai trò của người dùng
+4 - sys_user_depart: quan hệ giữa người dùng - đơn vị
+5 - sys_user_role: quan hệ giữa người dùng - đơn vị
+6 - sys_permission: danh sách quyền/menu của hệ thống ( dạng cây, với parent_id là id của quyền cha)
+7 - sys_role_permission: quan hệ giữa vai trò và quyền hệ thống
+
+Base code của hệ thống được gen bởi jhipster, người dùng đang được quản lý ở bảng jhi_user,
+quyền ở bảng authority, mối quan hệ người dùng & quyền ở bảng jhi_user_authority
+
+## Yêu cầu (Mỗi yêu cầu 1 điểm)
+
+1. Chuyển đổi lưu trữ người dùng từ bảng jhi_user sang sys_user
+2. Chuyển đổi quyền từ jhi_authority sang sys_role, áp dụng các mối quan hệ qua bảng trung gian tương ứng (sys_user_role)
+3. Với hàm login, bổ sung thêm cơ chế salt cho mật khẩu
+4. Với hàm logout, bổ sung thêm cơ chế logout thì expire token
+5. Viết api trả về cây menu ứng với vai trò của của người dùng (sys_role_permission)
+6. Bổ sung thêm cơ chế mã hóa bảo mật cho các trường nhạy cảm trong file config application.yml
+7. Với tất cả request được gọi lên hệ thống, yêu cầu ghi lại KPI log ứng với bảng sys_log
+
+```
+   `log_type` loại log, mặc định để là 2 - KPI log - ứng với yêu cầu bài toán ,
+   `log_content` body của request,
+   `userid` id của tài khoản gửi request,
+   `username` username của request,
+   `ip` ip của người gửi request,
+   `method` method của request,
+   `request_url` url của request,
+   `request_param` các param truyền cùng request, lưu vào với cấu trúc json,
+   `cost_time` Thời gian xử lý của request,
+   `response_code` mã trả về của request,
+   `response_content` nội dung trả về của request,
+```
+
+8. Với token trả về cho người dùng, bổ sung vào payload thêm trường depart_id: là id của đơn vị người dùng
+9. Tạo ra bảng mới: good - Vật tư
+
+```
+CREATE TABLE `ctg_good` (
+  `id` bigint DEFAULT NULL,
+  `good_name` varchar(100) DEFAULT NULL,
+  `good_type` varchar(100) DEFAULT NULL,
+  `depart_id` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+```
+
+Viết api lấy danh sách vật tư thuộc đơn vị mà người dùng quản lý (thông qua depart_id). Chú ý nếu đơn vị của người dùng có các đơn vị con thì vật tư của đơn vị con cũng thuộc quyền quản lý của đơn vị người dùng
+
+10. Giả sử câu truy vấn lấy danh sách vật tư đã tối ưu hết cỡ, viết api trả về danh sách phân trang có tổng số bản ghi sao cho thời gian xử lý là ngắn nhất, ước lượng bảng good lên đến 50M bản ghi.
+    10.1 Đề xuất kỹ thuật random 1M bản ghi để làm example data
+
 # SecurityExample
 
 This application was generated using JHipster 7.9.3, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v7.9.3](https://www.jhipster.tech/documentation-archive/v7.9.3).
