@@ -17,6 +17,7 @@ quyền ở bảng authority, mối quan hệ người dùng & quyền ở bản
 
 ## Yêu cầu (Mỗi yêu cầu 1 điểm)
 
+0. Import database docker, biết db sử dụng là mysql, schemal là SecurityExample, file dump ở trong folder source code: SecurityExample.sql
 1. Chuyển đổi lưu trữ người dùng từ bảng jhi_user sang sys_user
 2. Chuyển đổi quyền từ jhi_authority sang sys_role, áp dụng các mối quan hệ qua bảng trung gian tương ứng (sys_user_role)
 3. Với hàm login, bổ sung thêm cơ chế salt cho mật khẩu
