@@ -26,7 +26,8 @@ CREATE TABLE `databasechangelog` (
   `ID` varchar(255) NOT NULL,
   `AUTHOR` varchar(255) NOT NULL,
   `FILENAME` varchar(255) NOT NULL,
-  `DATEEXECUTED` datetime NOT NULL,
+  `DATEEXECUTED` datetime NOT NULL,n
+
   `ORDEREXECUTED` int NOT NULL,
   `EXECTYPE` varchar(10) NOT NULL,
   `MD5SUM` varchar(35) DEFAULT NULL,
