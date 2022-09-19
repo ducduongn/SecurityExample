@@ -97,6 +97,12 @@ public class SysUser {
         inverseJoinColumns = { @JoinColumn(name = "role_id", nullable = false, updatable = false) })
     private Set<SysRole> sysRoles;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "sys_user_depart",
+        joinColumns = {@JoinColumn(name = "user_id", nullable = false, updatable = false)},
+        inverseJoinColumns = { @JoinColumn(name = "dep_id", nullable = false, updatable = false) })
+    private Set<SysDepart> sysDeparts;
+
     public String getId() {
         return id;
     }
@@ -319,6 +325,14 @@ public class SysUser {
 
     public void setSysRoles(Set<SysRole> sysRoles) {
         this.sysRoles = sysRoles;
+    }
+
+    public Set<SysDepart> getSysDeparts() {
+        return sysDeparts;
+    }
+
+    public void setSysDeparts(Set<SysDepart> sysDeparts) {
+        this.sysDeparts = sysDeparts;
     }
 
     @Override

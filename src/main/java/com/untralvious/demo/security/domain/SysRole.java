@@ -37,12 +37,26 @@ public class SysRole {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "sysRoles")
     private Set<SysUser> sysUsers;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "sys_role_permission",
+        joinColumns = {@JoinColumn(name = "role_id", nullable = false, updatable = false)},
+        inverseJoinColumns = { @JoinColumn(name = "permission_id", nullable = false, updatable = false) })
+    private Set<SysPermission> sysPermissions;
+
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Set<SysPermission> getSysPermissions() {
+        return sysPermissions;
+    }
+
+    public void setSysPermissions(Set<SysPermission> sysPermissions) {
+        this.sysPermissions = sysPermissions;
     }
 
     public String getRoleName() {

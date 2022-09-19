@@ -3,6 +3,7 @@ package com.untralvious.demo.security.domain;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "sys_depart", schema = "securityexample", catalog = "")
@@ -71,6 +72,9 @@ public class SysDepart {
     @Basic
     @Column(name = "update_time", nullable = true)
     private Timestamp updateTime;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "sysDeparts")
+    private Set<SysUser> sysUsers;
 
     public String getId() {
         return id;

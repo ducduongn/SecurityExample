@@ -3,6 +3,7 @@ package com.untralvious.demo.security.domain;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "sys_permission", schema = "securityexample", catalog = "")
@@ -90,6 +91,9 @@ public class SysPermission {
     @Column(name = "internal_or_external", nullable = true)
     private Byte internalOrExternal;
 
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "sysPermissions")
+    private Set<SysRole> sysUsers;
+
     public String getId() {
         return id;
     }
@@ -97,6 +101,7 @@ public class SysPermission {
     public void setId(String id) {
         this.id = id;
     }
+
 
     public String getParentId() {
         return parentId;
@@ -296,6 +301,14 @@ public class SysPermission {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Set<SysRole> getSysUsers() {
+        return sysUsers;
+    }
+
+    public void setSysUsers(Set<SysRole> sysUsers) {
+        this.sysUsers = sysUsers;
     }
 
     public Byte getInternalOrExternal() {
