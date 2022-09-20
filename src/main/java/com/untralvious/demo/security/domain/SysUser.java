@@ -1,106 +1,163 @@
 package com.untralvious.demo.security.domain;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "sys_user", schema = "securityexample", catalog = "")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class SysUser {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false, length = 32)
     private String id;
+
     @Basic
     @Column(name = "username", nullable = true, length = 100)
     private String username;
+
     @Basic
     @Column(name = "realname", nullable = true, length = 100)
     private String realname;
+
     @Basic
     @Column(name = "password", nullable = true, length = 255)
     private String password;
+
     @Basic
     @Column(name = "salt", nullable = true, length = 45)
     private String salt;
+
     @Basic
     @Column(name = "avatar", nullable = true, length = 255)
     private String avatar;
+
     @Basic
     @Column(name = "birthday", nullable = true)
     private Timestamp birthday;
+
     @Basic
     @Column(name = "sex", nullable = true)
     private Byte sex;
+
     @Basic
     @Column(name = "email", nullable = true, length = 45)
     private String email;
+
     @Basic
     @Column(name = "phone", nullable = true, length = 45)
     private String phone;
+
     @Basic
     @Column(name = "org_code", nullable = true, length = 64)
     private String orgCode;
+
     @Basic
     @Column(name = "status", nullable = true)
     private Byte status;
+
     @Basic
     @Column(name = "del_flag", nullable = true)
     private Byte delFlag;
+
     @Basic
     @Column(name = "third_id", nullable = true, length = 100)
     private String thirdId;
+
     @Basic
     @Column(name = "third_type", nullable = true, length = 100)
     private String thirdType;
+
     @Basic
     @Column(name = "activiti_sync", nullable = true)
     private Byte activitiSync;
+
     @Basic
     @Column(name = "work_no", nullable = true, length = 100)
     private String workNo;
+
     @Basic
     @Column(name = "post", nullable = true, length = 100)
     private String post;
+
     @Basic
     @Column(name = "telephone", nullable = true, length = 45)
     private String telephone;
+
     @Basic
     @Column(name = "create_by", nullable = true, length = 32)
     private String createBy;
+
     @Basic
     @Column(name = "create_time", nullable = true)
     private Timestamp createTime;
+
     @Basic
     @Column(name = "update_by", nullable = true, length = 32)
     private String updateBy;
+
     @Basic
     @Column(name = "update_time", nullable = true)
     private Timestamp updateTime;
+
     @Basic
     @Column(name = "user_identity", nullable = true)
     private Byte userIdentity;
+
     @Basic
     @Column(name = "depart_ids", nullable = true, length = -1)
     private String departIds;
+
     @Basic
     @Column(name = "rel_tenant_ids", nullable = true, length = 100)
     private String relTenantIds;
+
     @Basic
     @Column(name = "client_id", nullable = true, length = 64)
     private String clientId;
 
+    @NotNull
+    @Column(nullable = false)
+    private boolean activated = false;
+
+    @Size(max = 20)
+    @Column(name = "activation_key", length = 20)
+    @JsonIgnore
+    private String activationKey;
+
+    @Size(max = 20)
+    @Column(name = "reset_key", length = 20)
+    @JsonIgnore
+    private String resetKey;
+
+    @Basic
+    @Column(name = "reset_time", nullable = true)
+    private Timestamp resetTime;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "sys_user_role",
-        joinColumns = {@JoinColumn(name = "user_id", nullable = false, updatable = false)},
-        inverseJoinColumns = { @JoinColumn(name = "role_id", nullable = false, updatable = false) })
+    @JoinTable(
+        name = "sys_user_role",
+        joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") },
+        inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") }
+    )
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @BatchSize(size = 20)
     private Set<SysRole> sysRoles;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "sys_user_depart",
-        joinColumns = {@JoinColumn(name = "user_id", nullable = false, updatable = false)},
-        inverseJoinColumns = { @JoinColumn(name = "dep_id", nullable = false, updatable = false) })
+    @JoinTable(
+        name = "sys_user_depart",
+        joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
+        inverseJoinColumns = { @JoinColumn(name = "dep_id", nullable = false, updatable = false) }
+    )
     private Set<SysDepart> sysDeparts;
 
     public String getId() {
@@ -335,16 +392,104 @@ public class SysUser {
         this.sysDeparts = sysDeparts;
     }
 
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
+    public String getActivationKey() {
+        return activationKey;
+    }
+
+    public void setActivationKey(String activationKey) {
+        this.activationKey = activationKey;
+    }
+
+    public String getResetKey() {
+        return resetKey;
+    }
+
+    public void setResetKey(String resetKey) {
+        this.resetKey = resetKey;
+    }
+
+    public Timestamp getResetTime() {
+        return resetTime;
+    }
+
+    public void setResetTime(Timestamp resetTime) {
+        this.resetTime = resetTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SysUser sysUser = (SysUser) o;
-        return Objects.equals(id, sysUser.id) && Objects.equals(username, sysUser.username) && Objects.equals(realname, sysUser.realname) && Objects.equals(password, sysUser.password) && Objects.equals(salt, sysUser.salt) && Objects.equals(avatar, sysUser.avatar) && Objects.equals(birthday, sysUser.birthday) && Objects.equals(sex, sysUser.sex) && Objects.equals(email, sysUser.email) && Objects.equals(phone, sysUser.phone) && Objects.equals(orgCode, sysUser.orgCode) && Objects.equals(status, sysUser.status) && Objects.equals(delFlag, sysUser.delFlag) && Objects.equals(thirdId, sysUser.thirdId) && Objects.equals(thirdType, sysUser.thirdType) && Objects.equals(activitiSync, sysUser.activitiSync) && Objects.equals(workNo, sysUser.workNo) && Objects.equals(post, sysUser.post) && Objects.equals(telephone, sysUser.telephone) && Objects.equals(createBy, sysUser.createBy) && Objects.equals(createTime, sysUser.createTime) && Objects.equals(updateBy, sysUser.updateBy) && Objects.equals(updateTime, sysUser.updateTime) && Objects.equals(userIdentity, sysUser.userIdentity) && Objects.equals(departIds, sysUser.departIds) && Objects.equals(relTenantIds, sysUser.relTenantIds) && Objects.equals(clientId, sysUser.clientId);
+        return (
+            Objects.equals(id, sysUser.id) &&
+            Objects.equals(username, sysUser.username) &&
+            Objects.equals(realname, sysUser.realname) &&
+            Objects.equals(password, sysUser.password) &&
+            Objects.equals(salt, sysUser.salt) &&
+            Objects.equals(avatar, sysUser.avatar) &&
+            Objects.equals(birthday, sysUser.birthday) &&
+            Objects.equals(sex, sysUser.sex) &&
+            Objects.equals(email, sysUser.email) &&
+            Objects.equals(phone, sysUser.phone) &&
+            Objects.equals(orgCode, sysUser.orgCode) &&
+            Objects.equals(status, sysUser.status) &&
+            Objects.equals(delFlag, sysUser.delFlag) &&
+            Objects.equals(thirdId, sysUser.thirdId) &&
+            Objects.equals(thirdType, sysUser.thirdType) &&
+            Objects.equals(activitiSync, sysUser.activitiSync) &&
+            Objects.equals(workNo, sysUser.workNo) &&
+            Objects.equals(post, sysUser.post) &&
+            Objects.equals(telephone, sysUser.telephone) &&
+            Objects.equals(createBy, sysUser.createBy) &&
+            Objects.equals(createTime, sysUser.createTime) &&
+            Objects.equals(updateBy, sysUser.updateBy) &&
+            Objects.equals(updateTime, sysUser.updateTime) &&
+            Objects.equals(userIdentity, sysUser.userIdentity) &&
+            Objects.equals(departIds, sysUser.departIds) &&
+            Objects.equals(relTenantIds, sysUser.relTenantIds) &&
+            Objects.equals(clientId, sysUser.clientId)
+        );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, realname, password, salt, avatar, birthday, sex, email, phone, orgCode, status, delFlag, thirdId, thirdType, activitiSync, workNo, post, telephone, createBy, createTime, updateBy, updateTime, userIdentity, departIds, relTenantIds, clientId);
+        return Objects.hash(
+            id,
+            username,
+            realname,
+            password,
+            salt,
+            avatar,
+            birthday,
+            sex,
+            email,
+            phone,
+            orgCode,
+            status,
+            delFlag,
+            thirdId,
+            thirdType,
+            activitiSync,
+            workNo,
+            post,
+            telephone,
+            createBy,
+            createTime,
+            updateBy,
+            updateTime,
+            userIdentity,
+            departIds,
+            relTenantIds,
+            clientId
+        );
     }
 }
