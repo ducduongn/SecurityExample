@@ -1,0 +1,80 @@
+version: '3.8'
+services:
+  elastic:
+    container_name: es01
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    ports:
+      - '9200:9200'
+    networks:
+      - es-net
+    environment:
+      #      - transport.host=127.0.0.1
+      #      - http.host=0.0.0.0
+      #      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      #      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+    #      - xpack.security.http.ssl.enabled=true
+    #      - xpack.security.http.ssl.key=certs/es01/es01.key
+    #      - xpack.security.http.ssl.certificate=certs/es01/es01.crt
+    #      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+    #      - xpack.security.http.ssl.verification_mode=certificate
+    #      - xpack.security.transport.ssl.enabled=true
+    #      - xpack.security.transport.ssl.key=certs/es01/es01.key
+    #      - xpack.security.transport.ssl.certificate=certs/es01/es01.crt
+    #      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+    #      - xpack.security.transport.ssl.verification_mode=certificate
+    #      - xpack.license.self_generated.type=${LICENSE}
+    volumes:
+      #      - certs:/usr/share/elasticsearch/config/certs
+      - esdata01:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    ports:
+      - 5601:5601
+    depends_on:
+      - elastic
+    networks:
+      - es-net
+    environment:
+      #      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=http://localhost:9200
+    #      - ELASTICSEARCH_USERNAME=kibana_system
+    #      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
+    #      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
+    volumes:
+      #      - certs:/usr/share/kibana/config/certs
+      - kibanadata:/usr/share/kibana/data
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
+    ports:
+      - '25826:25826'
+      - '5044:5044'
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro # Pipeline configuration
+    restart: on-failure
+    depends_on:
+      - elastic
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:${STACK_VERSION}
+    volumes:
+      - ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro # Configuration file
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro # Docker logs
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Additional information about containers
+      - ./filebeat/data:/usr/share/filebeat/data:rw # Persistence data
+    user: root # Allow access to log files and docker.sock
+    restart: on-failure
+    depends_on:
+      - logstash
+volumes:
+  #  certs:
+  #    driver: local
+  esdata01:
+    driver: local
+  kibanadata:
+    driver: local
+
+networks:
+  es-net:
+    driver: bridge

@@ -54,7 +54,7 @@ public class SysAdminUserDto implements Serializable {
         this.username = user.getUsername();
         this.realName = user.getRealname();
         this.email = user.getEmail();
-        this.activated = user.isActivated();
+        //        this.activated = user.isActivated();
         this.createTime = user.getCreateTime();
         this.createBy = user.getCreateBy();
         this.updateTime = user.getUpdateTime();

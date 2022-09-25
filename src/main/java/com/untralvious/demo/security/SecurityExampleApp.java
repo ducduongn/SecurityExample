@@ -1,5 +1,6 @@
 package com.untralvious.demo.security;
 
+import co.elastic.apm.attach.ElasticApmAttacher;
 import com.untralvious.demo.security.config.ApplicationProperties;
 import com.untralvious.demo.security.config.CRLFLogConverter;
 import java.net.InetAddress;

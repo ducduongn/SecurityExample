@@ -71,6 +71,15 @@ jasypt:
     password: lolipop123aA@
     bean: jasyptStringEncryptor
 
+elastic:
+  apm:
+    application-packages: com.untralvious.demo.security
+    log-level: DEBUG
+    secret-token: xxVpmQB2HMzCL9PgBHVrnxjNXXw5J7bd79DFm6sjBJR5HPXDhcF8MSb3vv4bpg44
+    enabled: 'true'
+    server-url: http://localhost:8200
+    environment: dev
+    service-name: elastic-apm-spring-boot-integration
 # ===================================================================
 # JHipster specific properties
 #
