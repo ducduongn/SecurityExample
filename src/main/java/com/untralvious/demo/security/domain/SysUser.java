@@ -1,18 +1,12 @@
 package com.untralvious.demo.security.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "sys_user", schema = "securityexample", catalog = "")
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class SysUser {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -124,18 +118,16 @@ public class SysUser {
     @Column(name = "client_id", nullable = true, length = 64)
     private String clientId;
 
-    @NotNull
-    @Column(nullable = false)
-    private boolean activated = false;
+    @Basic
+    @Column(name = "activated", nullable = false)
+    private boolean activated;
 
-    @Size(max = 20)
-    @Column(name = "activation_key", length = 20)
-    @JsonIgnore
+    @Basic
+    @Column(name = "activation_key", nullable = true, length = 20)
     private String activationKey;
 
-    @Size(max = 20)
-    @Column(name = "reset_key", length = 20)
-    @JsonIgnore
+    @Basic
+    @Column(name = "reset_key", nullable = true, length = 20)
     private String resetKey;
 
     @Basic
@@ -145,11 +137,9 @@ public class SysUser {
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
         name = "sys_user_role",
-        joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") },
-        inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") }
+        joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
+        inverseJoinColumns = { @JoinColumn(name = "role_id", nullable = false, updatable = false) }
     )
-    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @BatchSize(size = 20)
     private Set<SysRole> sysRoles;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -166,6 +156,22 @@ public class SysUser {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Set<SysRole> getSysRoles() {
+        return sysRoles;
+    }
+
+    public void setSysRoles(Set<SysRole> sysRoles) {
+        this.sysRoles = sysRoles;
+    }
+
+    public Set<SysDepart> getSysDeparts() {
+        return sysDeparts;
+    }
+
+    public void setSysDeparts(Set<SysDepart> sysDeparts) {
+        this.sysDeparts = sysDeparts;
     }
 
     public String getUsername() {
@@ -376,22 +382,6 @@ public class SysUser {
         this.clientId = clientId;
     }
 
-    public Set<SysRole> getSysRoles() {
-        return sysRoles;
-    }
-
-    public void setSysRoles(Set<SysRole> sysRoles) {
-        this.sysRoles = sysRoles;
-    }
-
-    public Set<SysDepart> getSysDeparts() {
-        return sysDeparts;
-    }
-
-    public void setSysDeparts(Set<SysDepart> sysDeparts) {
-        this.sysDeparts = sysDeparts;
-    }
-
     public boolean isActivated() {
         return activated;
     }
@@ -430,6 +420,7 @@ public class SysUser {
         if (o == null || getClass() != o.getClass()) return false;
         SysUser sysUser = (SysUser) o;
         return (
+            activated == sysUser.activated &&
             Objects.equals(id, sysUser.id) &&
             Objects.equals(username, sysUser.username) &&
             Objects.equals(realname, sysUser.realname) &&
@@ -456,7 +447,10 @@ public class SysUser {
             Objects.equals(userIdentity, sysUser.userIdentity) &&
             Objects.equals(departIds, sysUser.departIds) &&
             Objects.equals(relTenantIds, sysUser.relTenantIds) &&
-            Objects.equals(clientId, sysUser.clientId)
+            Objects.equals(clientId, sysUser.clientId) &&
+            Objects.equals(activationKey, sysUser.activationKey) &&
+            Objects.equals(resetKey, sysUser.resetKey) &&
+            Objects.equals(resetTime, sysUser.resetTime)
         );
     }
 
@@ -489,7 +483,11 @@ public class SysUser {
             userIdentity,
             departIds,
             relTenantIds,
-            clientId
+            clientId,
+            activated,
+            activationKey,
+            resetKey,
+            resetTime
         );
     }
 }

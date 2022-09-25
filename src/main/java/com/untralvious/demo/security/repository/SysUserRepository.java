@@ -1,7 +1,6 @@
 package com.untralvious.demo.security.repository;
 
 import com.untralvious.demo.security.domain.SysUser;
-import com.untralvious.demo.security.domain.User;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;

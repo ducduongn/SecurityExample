@@ -1,13 +1,10 @@
 package com.untralvious.demo.security.service.dto;
 
 import com.untralvious.demo.security.config.Constants;
-import com.untralvious.demo.security.domain.Authority;
 import com.untralvious.demo.security.domain.SysRole;
 import com.untralvious.demo.security.domain.SysUser;
-import com.untralvious.demo.security.domain.User;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.constraints.Email;

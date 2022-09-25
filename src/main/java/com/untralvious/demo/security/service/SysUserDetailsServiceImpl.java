@@ -1,16 +1,11 @@
 package com.untralvious.demo.security.service;
 
-import com.untralvious.demo.security.domain.Authority;
 import com.untralvious.demo.security.domain.SysRole;
 import com.untralvious.demo.security.domain.SysUser;
-import com.untralvious.demo.security.domain.User;
 import com.untralvious.demo.security.repository.SysUserRepository;
-import com.untralvious.demo.security.security.DomainUserDetailsService;
 import com.untralvious.demo.security.security.UserNotActivatedException;
-import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.slf4j.Logger;
