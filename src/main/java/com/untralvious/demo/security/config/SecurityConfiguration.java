@@ -5,6 +5,8 @@ import com.untralvious.demo.security.security.jwt.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -43,6 +45,11 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -55,21 +62,21 @@ public class SecurityConfiguration {
             .disable()
             .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling()
-                .authenticationEntryPoint(problemSupport)
-                .accessDeniedHandler(problemSupport)
-        .and()
+            .authenticationEntryPoint(problemSupport)
+            .accessDeniedHandler(problemSupport)
+            .and()
             .headers()
-                .contentSecurityPolicy(jHipsterProperties.getSecurity().getContentSecurityPolicy())
+            .contentSecurityPolicy(jHipsterProperties.getSecurity().getContentSecurityPolicy())
             .and()
-                .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
+            .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
             .and()
-                .permissionsPolicy().policy("camera=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), sync-xhr=()")
+            .permissionsPolicy().policy("camera=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), sync-xhr=()")
             .and()
-                .frameOptions().sameOrigin()
-        .and()
+            .frameOptions().sameOrigin()
+            .and()
             .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers("/app/**/*.{js,html}").permitAll()
@@ -89,9 +96,9 @@ public class SecurityConfiguration {
             .antMatchers("/management/info").permitAll()
             .antMatchers("/management/prometheus").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
-        .and()
+            .and()
             .httpBasic()
-        .and()
+            .and()
             .apply(securityConfigurerAdapter());
         return http.build();
         // @formatter:on
