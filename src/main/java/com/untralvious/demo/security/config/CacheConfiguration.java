@@ -1,7 +1,6 @@
 package com.untralvious.demo.security.config;
 
 import com.untralvious.demo.security.repository.SysUserRepository;
-import com.untralvious.demo.security.repository.UserRepository;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 import javax.cache.configuration.MutableConfiguration;

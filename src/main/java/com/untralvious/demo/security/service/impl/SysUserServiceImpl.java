@@ -26,7 +26,7 @@ import tech.jhipster.security.RandomUtil;
 @Service
 public class SysUserServiceImpl {
 
-    private final Logger log = LoggerFactory.getLogger(UserService.class);
+    private final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
     @Autowired
     private final SysUserRepository userRepository;
