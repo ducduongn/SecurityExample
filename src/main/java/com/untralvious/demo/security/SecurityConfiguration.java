@@ -1,8 +1,10 @@
-package com.untralvious.demo.security.config;
+package com.untralvious.demo.security;
 
 import com.untralvious.demo.security.security.*;
 import com.untralvious.demo.security.security.jwt.*;
+import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,9 +24,9 @@ import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 import tech.jhipster.config.JHipsterProperties;
 
-@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Import(SecurityProblemSupport.class)
+@Configuration
 public class SecurityConfiguration {
 
     private final JHipsterProperties jHipsterProperties;
@@ -52,8 +54,8 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+    public AuthenticationManager authenticationManager() throws Exception {
+        return new MyAuthenticationManager(Arrays.asList(new CustomAuthenticationProvider()));
     }
 
     @Bean
@@ -103,6 +105,7 @@ public class SecurityConfiguration {
             .antMatchers("/management/info").permitAll()
             .antMatchers("/management/prometheus").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+
         .and()
             .httpBasic()
         .and()

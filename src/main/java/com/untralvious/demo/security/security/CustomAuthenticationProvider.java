@@ -1,7 +1,5 @@
 package com.untralvious.demo.security.security;
 
-import com.untralvious.demo.security.service.SysUserDetailsImpl;
-import com.untralvious.demo.security.service.SysUserDetailsServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -12,9 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
-@Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
@@ -32,14 +28,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("invalid login details");
         }
         // get user details using Spring security user details service
-        UserDetails user = null;
+        SysUserDetailsImpl user;
         try {
             user = userDetailsService.loadUserByUsername(username);
         } catch (UsernameNotFoundException exception) {
             throw new BadCredentialsException("invalid login details");
         }
 
-        if (!encoder.matches(password, user.getPassword())) {
+        if (!encoder.matches(encoder.encode(user.getSalt() + password), user.getPassword())) {
             throw new BadCredentialsException("Password not matched");
         }
 

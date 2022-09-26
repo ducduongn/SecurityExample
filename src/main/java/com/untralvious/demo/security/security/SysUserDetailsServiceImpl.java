@@ -1,13 +1,11 @@
-package com.untralvious.demo.security.service;
+package com.untralvious.demo.security.security;
 
 import com.untralvious.demo.security.domain.SysRole;
 import com.untralvious.demo.security.domain.SysUser;
 import com.untralvious.demo.security.repository.SysUserRepository;
-import com.untralvious.demo.security.security.UserNotActivatedException;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +14,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Component
 public class SysUserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
@@ -29,15 +27,15 @@ public class SysUserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(final String login) {
+    public SysUserDetailsImpl loadUserByUsername(final String login) {
         log.debug("Authenticating {}", login);
 
-        if (new EmailValidator().isValid(login, null)) {
-            return sysUserRepository
-                .findOneWithAuthoritiesByEmailIgnoreCase(login)
-                .map(user -> createSpringSecurityUser(login, user))
-                .orElseThrow(() -> new UsernameNotFoundException("User with email " + login + " was not found in the database"));
-        }
+        //        if (new EmailValidator().isValid(login, null)) {
+        //            return sysUserRepository
+        //                .findOneWithAuthoritiesByEmailIgnoreCase(login)
+        //                .map(user -> createSpringSecurityUser(login, user))
+        //                .orElseThrow(() -> new UsernameNotFoundException("User with email " + login + " was not found in the database"));
+        //        }
 
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
         return sysUserRepository
@@ -46,7 +44,7 @@ public class SysUserDetailsServiceImpl implements UserDetailsService {
             .orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database"));
     }
 
-    private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, SysUser user) {
+    private SysUserDetailsImpl createSpringSecurityUser(String lowercaseLogin, SysUser user) {
         //        if (!user.isActivated()) {
         //            throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
         //        }
@@ -56,6 +54,13 @@ public class SysUserDetailsServiceImpl implements UserDetailsService {
             .map(SysRole::getRoleName)
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
+        return new SysUserDetailsImpl(
+            user.getId(),
+            user.getUsername(),
+            user.getPassword(),
+            user.getEmail(),
+            user.getSalt(),
+            grantedAuthorities
+        );
     }
 }

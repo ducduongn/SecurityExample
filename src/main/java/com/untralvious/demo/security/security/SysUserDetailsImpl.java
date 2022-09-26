@@ -1,4 +1,4 @@
-package com.untralvious.demo.security.service;
+package com.untralvious.demo.security.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.untralvious.demo.security.domain.SysUser;
@@ -20,6 +20,8 @@ public class SysUserDetailsImpl implements UserDetails {
 
     private String email;
 
+    private String salt;
+
     @JsonIgnore
     private String password;
 
@@ -30,12 +32,14 @@ public class SysUserDetailsImpl implements UserDetails {
         String username,
         String email,
         String password,
+        String salt,
         Collection<? extends GrantedAuthority> authorities
     ) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.salt = salt;
         this.authorities = authorities;
     }
 
@@ -46,7 +50,7 @@ public class SysUserDetailsImpl implements UserDetails {
             .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
             .collect(Collectors.toList());
 
-        return new SysUserDetailsImpl(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), authorities);
+        return new SysUserDetailsImpl(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), user.getSalt(), authorities);
     }
 
     public String getId() {
@@ -90,6 +94,10 @@ public class SysUserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getSalt() {
+        return salt;
     }
 
     @Override
