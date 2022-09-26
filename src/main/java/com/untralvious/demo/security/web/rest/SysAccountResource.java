@@ -2,6 +2,7 @@ package com.untralvious.demo.security.web.rest;
 
 import com.untralvious.demo.security.service.MailService;
 import com.untralvious.demo.security.service.SysUserService;
+import com.untralvious.demo.security.service.impl.SysUserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,12 @@ public class SysAccountResource {
     private final Logger log = LoggerFactory.getLogger(SysAccountResource.class);
 
     @Autowired
-    private final SysUserService sysUserService;
+    private final SysUserServiceImpl sysUserService;
 
     @Autowired
     private final MailService mailService;
 
-    public SysAccountResource(SysUserService sysUserService, MailService mailService) {
+    public SysAccountResource(SysUserServiceImpl sysUserService, MailService mailService) {
         this.sysUserService = sysUserService;
         this.mailService = mailService;
     }

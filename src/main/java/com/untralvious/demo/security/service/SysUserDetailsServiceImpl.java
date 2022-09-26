@@ -41,7 +41,7 @@ public class SysUserDetailsServiceImpl implements UserDetailsService {
 
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
         return sysUserRepository
-            .findOneWithAuthoritiesByLogin(lowercaseLogin)
+            .findOneWithAuthoritiesByUsername(lowercaseLogin)
             .map(user -> createSpringSecurityUser(lowercaseLogin, user))
             .orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database"));
     }
