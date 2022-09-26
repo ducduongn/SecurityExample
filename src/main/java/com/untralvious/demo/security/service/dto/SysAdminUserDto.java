@@ -56,7 +56,7 @@ public class SysAdminUserDto implements Serializable {
         this.createBy = user.getCreateBy();
         this.updateTime = user.getUpdateTime();
         this.updateBy = user.getUpdateBy();
-        this.sysRoles = user.getSysRoles().stream().map(SysRole::getRoleName).collect(Collectors.toSet());
+        this.sysRoles = user.getAuthorities().stream().map(SysRole::getRoleName).collect(Collectors.toSet());
     }
 
     public String getId() {

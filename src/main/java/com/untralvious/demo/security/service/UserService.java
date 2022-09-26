@@ -4,6 +4,7 @@ import com.untralvious.demo.security.config.Constants;
 import com.untralvious.demo.security.domain.Authority;
 import com.untralvious.demo.security.domain.User;
 import com.untralvious.demo.security.repository.AuthorityRepository;
+import com.untralvious.demo.security.repository.SysUserRepository;
 import com.untralvious.demo.security.repository.UserRepository;
 import com.untralvious.demo.security.security.AuthoritiesConstants;
 import com.untralvious.demo.security.security.SecurityUtils;
@@ -35,6 +36,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final SysUserRepository sysUserRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final AuthorityRepository authorityRepository;
@@ -43,11 +46,13 @@ public class UserService {
 
     public UserService(
         UserRepository userRepository,
+        SysUserRepository sysUserRepository,
         PasswordEncoder passwordEncoder,
         AuthorityRepository authorityRepository,
         CacheManager cacheManager
     ) {
         this.userRepository = userRepository;
+        this.sysUserRepository = sysUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;

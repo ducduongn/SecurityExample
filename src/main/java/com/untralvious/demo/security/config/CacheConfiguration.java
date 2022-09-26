@@ -1,5 +1,7 @@
 package com.untralvious.demo.security.config;
 
+import com.untralvious.demo.security.repository.SysUserRepository;
+import com.untralvious.demo.security.repository.UserRepository;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 import javax.cache.configuration.MutableConfiguration;
@@ -76,8 +78,8 @@ public class CacheConfiguration {
     @Bean
     public JCacheManagerCustomizer cacheManagerCustomizer(javax.cache.configuration.Configuration<Object, Object> jcacheConfiguration) {
         return cm -> {
-            createCache(cm, com.untralvious.demo.security.repository.UserRepository.USERS_BY_LOGIN_CACHE, jcacheConfiguration);
-            createCache(cm, com.untralvious.demo.security.repository.UserRepository.USERS_BY_EMAIL_CACHE, jcacheConfiguration);
+            createCache(cm, SysUserRepository.SYS_USERS_BY_LOGIN_CACHE, jcacheConfiguration);
+            createCache(cm, SysUserRepository.SYS_USERS_BY_EMAIL_CACHE, jcacheConfiguration);
             createCache(cm, com.untralvious.demo.security.domain.User.class.getName(), jcacheConfiguration);
             createCache(cm, com.untralvious.demo.security.domain.Authority.class.getName(), jcacheConfiguration);
             createCache(cm, com.untralvious.demo.security.domain.User.class.getName() + ".authorities", jcacheConfiguration);

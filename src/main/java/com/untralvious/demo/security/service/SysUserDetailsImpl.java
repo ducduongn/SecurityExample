@@ -41,7 +41,7 @@ public class SysUserDetailsImpl implements UserDetails {
 
     public static SysUserDetailsImpl build(SysUser user) {
         List<GrantedAuthority> authorities = user
-            .getSysRoles()
+            .getAuthorities()
             .stream()
             .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
             .collect(Collectors.toList());

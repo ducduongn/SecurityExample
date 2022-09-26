@@ -1,5 +1,6 @@
 package com.untralvious.demo.security.domain;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
@@ -7,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "sys_user", schema = "securityexample", catalog = "")
-public class SysUser {
+public class SysUser implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -140,7 +141,7 @@ public class SysUser {
         joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
         inverseJoinColumns = { @JoinColumn(name = "role_id", nullable = false, updatable = false) }
     )
-    private Set<SysRole> sysRoles;
+    private Set<SysRole> authorities;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
@@ -158,12 +159,12 @@ public class SysUser {
         this.id = id;
     }
 
-    public Set<SysRole> getSysRoles() {
-        return sysRoles;
+    public Set<SysRole> getAuthorities() {
+        return authorities;
     }
 
-    public void setSysRoles(Set<SysRole> sysRoles) {
-        this.sysRoles = sysRoles;
+    public void setAuthorities(Set<SysRole> sysRoles) {
+        this.authorities = sysRoles;
     }
 
     public Set<SysDepart> getSysDeparts() {

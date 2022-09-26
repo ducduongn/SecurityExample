@@ -1,46 +1,59 @@
 package com.untralvious.demo.security.domain;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "sys_role", schema = "securityexample", catalog = "")
-public class SysRole {
+public class SysRole implements Serializable {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false, length = 32)
     private String id;
+
     @Basic
     @Column(name = "role_name", nullable = true, length = 200)
     private String roleName;
+
     @Basic
     @Column(name = "role_code", nullable = false, length = 100)
     private String roleCode;
+
     @Basic
     @Column(name = "description", nullable = true, length = 255)
     private String description;
+
     @Basic
     @Column(name = "create_by", nullable = true, length = 32)
     private String createBy;
+
     @Basic
     @Column(name = "create_time", nullable = true)
     private Timestamp createTime;
+
     @Basic
     @Column(name = "update_by", nullable = true, length = 32)
     private String updateBy;
+
     @Basic
     @Column(name = "update_time", nullable = true)
     private Timestamp updateTime;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "sysRoles")
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authorities")
     private Set<SysUser> sysUsers;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "sys_role_permission",
-        joinColumns = {@JoinColumn(name = "role_id", nullable = false, updatable = false)},
-        inverseJoinColumns = { @JoinColumn(name = "permission_id", nullable = false, updatable = false) })
+    @JoinTable(
+        name = "sys_role_permission",
+        joinColumns = { @JoinColumn(name = "role_id", nullable = false, updatable = false) },
+        inverseJoinColumns = { @JoinColumn(name = "permission_id", nullable = false, updatable = false) }
+    )
     private Set<SysPermission> sysPermissions;
 
     public String getId() {
@@ -128,7 +141,16 @@ public class SysRole {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SysRole sysRole = (SysRole) o;
-        return Objects.equals(id, sysRole.id) && Objects.equals(roleName, sysRole.roleName) && Objects.equals(roleCode, sysRole.roleCode) && Objects.equals(description, sysRole.description) && Objects.equals(createBy, sysRole.createBy) && Objects.equals(createTime, sysRole.createTime) && Objects.equals(updateBy, sysRole.updateBy) && Objects.equals(updateTime, sysRole.updateTime);
+        return (
+            Objects.equals(id, sysRole.id) &&
+            Objects.equals(roleName, sysRole.roleName) &&
+            Objects.equals(roleCode, sysRole.roleCode) &&
+            Objects.equals(description, sysRole.description) &&
+            Objects.equals(createBy, sysRole.createBy) &&
+            Objects.equals(createTime, sysRole.createTime) &&
+            Objects.equals(updateBy, sysRole.updateBy) &&
+            Objects.equals(updateTime, sysRole.updateTime)
+        );
     }
 
     @Override

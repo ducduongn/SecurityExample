@@ -127,7 +127,7 @@ public class SysUserServiceImpl {
         newUser.setActivationKey(RandomUtil.generateActivationKey());
         Set<SysRole> sysRoles = new HashSet<>();
         sysRoleRepository.findById(AuthoritiesConstants.USER).ifPresent(sysRoles::add);
-        newUser.setSysRoles(sysRoles);
+        newUser.setAuthorities(sysRoles);
         userRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
@@ -164,7 +164,7 @@ public class SysUserServiceImpl {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toSet());
-            user.setSysRoles(authorities);
+            user.setAuthorities(authorities);
         }
         userRepository.save(user);
         this.clearUserCaches(user);
@@ -191,7 +191,7 @@ public class SysUserServiceImpl {
                     user.setEmail(userDTO.getEmail().toLowerCase());
                 }
                 user.setActivated(userDTO.isActivated());
-                Set<SysRole> managedAuthorities = user.getSysRoles();
+                Set<SysRole> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();
                 userDTO
                     .getSysRoles()
